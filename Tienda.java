@@ -3,11 +3,18 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Tienda{
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        int menu, opc;
+        boolean continuar=true;
         Scanner scanner = new Scanner(System.in);
         File archivo = new File("dispositivos.csv");
         ArrayList<DispositivoElectronico> dispositivos = new ArrayList<DispositivoElectronico>();
-        menu();
+        cargarArchivos(archivo);  
+        while(continuar){
+            menu();
+
+            continuar = volverAlMenu(scanner, " al menú? ");
+        }
     }
 
 
@@ -21,7 +28,7 @@ public class Tienda{
     }
 
     
-    private static void guardarDatos(/*ArrayList<Jugador> jugadores,*/File archivo){
+private static void guardarDatos(ArrayList<DispositivoElectronico> dispositivos,File archivo){
         
                 StringBuilder contenidoExistente = new StringBuilder();
                 try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
@@ -33,9 +40,9 @@ public class Tienda{
                     e.printStackTrace();
                 }
 
-                /*
-                for(int i=0; i<jugadores.size(); i++){
-                    contenidoExistente.append(jugadores.get(i).toString()).append("\n");
+                
+                for(int i=0; i<dispositivos.size(); i++){
+                    contenidoExistente.append(dispositivos.get(i).toString()).append("\n");
 
                     try (PrintWriter writer = new PrintWriter(new FileWriter(archivo))) {
                         writer.print(contenidoExistente.toString());
@@ -43,7 +50,7 @@ public class Tienda{
                         e.printStackTrace();
                     }
                 }
-                */
+                
     }
 
     private static void cargarArchivos(File archivo) throws IOException{
