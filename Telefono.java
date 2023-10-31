@@ -24,11 +24,11 @@ public class Telefono implements DispositivoElectronico {
     }
 
     @Override
-    public String validacionEncendido() {
+    public boolean validacionEncendido() {
         if(estado){
-            return "El dispositivo está encendido";
+            return estado;
         }else{
-            return" El dispositivo está apagado";
+            return estado;
         }
     }
     

@@ -10,8 +10,48 @@ public class Tienda{
         File archivo = new File("dispositivos.csv");
         ArrayList<DispositivoElectronico> dispositivos = new ArrayList<DispositivoElectronico>();
         cargarArchivos(archivo);  
+
+
+
+
         while(continuar){
             menu();
+            opc = scanner.nextInt();
+            scanner.nextLine();
+
+            switch(opc){
+                case 1:
+
+                    try (BufferedReader br = new BufferedReader(new FileReader(archivo)) ) {
+                        String line;
+                        
+                        while ((line = br.readLine()) != null) {
+                            
+                            String[] campos = line.split(",");
+
+                            for (String campo : campos) {
+                                System.out.print(campo + "\t|\t");
+                            }
+                            System.out.println(); 
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    System.out.println("Saliendo del programa...");
+                    continuar=false;
+                    break;
+                default:
+                    break;
+
+            }
 
             continuar = volverAlMenu(scanner, " al menú? ");
         }
@@ -22,7 +62,8 @@ public class Tienda{
         System.out.println("***** MENÚ TIENDA ELECTROTECH *****");
         System.out.println("1. Desplegar información de cada dispositivo");
         System.out.println("2. Validación dispositivos encendidos/apagados");
-        System.out.println("3. Salir");
+        System.out.println("3. Ingresar nuevo dispositivo");
+        System.out.println("4. Salir");
         System.out.print("Seleccione una opción: ");
 
     }
