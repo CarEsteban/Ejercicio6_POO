@@ -2,9 +2,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.swing.text.StyledEditorKit.BoldAction;
-
-import org.w3c.dom.traversal.TreeWalker;
 
 public class Tienda{
     public static void main(String[] args) throws IOException {
@@ -33,8 +30,6 @@ public class Tienda{
                     break;
                 case 2:
                     System.out.println("VALIDACION DISPOSITIVOS ENCENDIDOS O APAGADOS");
-                    //validarDispositivosEncendidos(dispositivos);
-                    mostrarDispositivosPorEstado(dispositivos, true);
                     break;
                 case 3:
                     dispositivos.get(0).getEstado();
@@ -62,76 +57,34 @@ public class Tienda{
         System.out.print("Seleccione una opción: ");
 
     }
-/* 
-    private static void validarDispositivosEncendidos(ArrayList<DispositivoElectronico> dispositivos){
-        System.out.println("Dispositivos encendidos:");
-        for (DispositivoElectronico dispositivo : dispositivos) {
-            if(dispositivo instanceof Telefono){
-                Telefono telefono = (Telefono) dispositivo;
-                if(telefono.getEstado()==true){
-                    System.out.println(dispositivo);
-                }
-            }
-            if(dispositivo instanceof Computadora){
-                Computadora computadora = (Computadora) dispositivo;
-                if(computadora.getEstado()==true){
-                    System.out.println(dispositivo);
-                }
-            }
-        }
-    }
 
-    private static void mostrarDispositivosPorEstado(ArrayList<DispositivoElectronico> dispositivos, boolean estado) {
-        String estadoString = estado ? "Encendidos" : "Apagados";
-        System.out.println("Dispositivos " + estadoString + ":");
-
-        for (DispositivoElectronico dispositivo : dispositivos) {
-            boolean dispositivoEncendido = false;
-
-            if (dispositivo instanceof Telefono) {
-                Telefono telefono = (Telefono) dispositivo;
-                dispositivoEncendido = telefono.getEstado();
-            } else if (dispositivo instanceof Computadora) {
-                Computadora computadora = (Computadora) dispositivo;
-                dispositivoEncendido = computadora.getEstado();
-            }
-
-            if (dispositivoEncendido == estado) {
-                System.out.println(dispositivo);
-            }
-        }
-    }
-*/
-private static void mostrarDispositivosPorEstado(ArrayList<DispositivoElectronico> dispositivos, boolean estado) {
-    String estadoString = estado ? "Encendidos" : "Apagados";
-    System.out.println("Dispositivos " + estadoString + ":");
-
-    for (DispositivoElectronico dispositivo : dispositivos) {
-        if (dispositivo instanceof Telefono && estado == ((Telefono) dispositivo).getEstado()) {
-            System.out.println(dispositivo);
-        } else if (dispositivo instanceof Computadora && estado == ((Computadora) dispositivo).getEstado()) {
-            System.out.println(dispositivo);
-        }
-    }
-}
     private static void cargarArchivos(File archivo, ArrayList<DispositivoElectronico> dispositivos) throws IOException{
+        
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String line;
-
+            boolean estado = false;
             br.readLine();
-
             while ((line = br.readLine()) != null) {
                 String[] campos = line.split(",");
                 if (campos[0].equals("Telefono")) {
 
                     String modelo = campos[1].trim();
-                    boolean estado = Boolean.parseBoolean(campos[2]);
-
+                    if(campos[3].equals("Encendido")){
+                        estado = true;
+                    }else if (campos[3].equals("Apagado")) {
+                        estado = false;
+                    }
+                    
                     dispositivos.add(new Telefono(modelo, estado));
 
                 }else if(campos[0].equals("Computadora")){
+                    
                     String marca = campos[2].trim();
-                    boolean estado = Boolean.parseBoolean(campos[2]);
+                    if(campos[3].equals("Encendido")){
+                        estado = true;
+                    }else if (campos[3].equals("Apagado")) {
+                        estado = false;
+                    }
                     dispositivos.add(new Computadora(marca, estado));
                 }
             }
@@ -141,16 +94,19 @@ private static void mostrarDispositivosPorEstado(ArrayList<DispositivoElectronic
     }
 
     private static void imprimirDispositivos(ArrayList<DispositivoElectronico> dispositivos, String tipo) {
-   
-        System.out.println(tipo + ":");
+        int contadorDispositivo = 0;
+        for (DispositivoElectronico dispositivo : dispositivos) {
+            if (dispositivo.getTipo().equals(tipo)) {
+                contadorDispositivo++;
+            }
+        }
+        System.out.println(tipo + ":" + "("+contadorDispositivo+")");
         for (DispositivoElectronico dispositivo : dispositivos) {
             if (dispositivo.getTipo().equals(tipo)) {
                 System.out.println("\t"+dispositivo);
             }
         }
     }
-
-
 
     private static boolean volverAlMenu(Scanner scanner, String eleccion) {
         System.out.println("¿Desea volver" + eleccion + " (1: Sí, 0: No): ");
