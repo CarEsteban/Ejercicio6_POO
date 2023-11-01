@@ -2,11 +2,17 @@ public class Computadora implements DispositivoElectronico {
   
     String marca;
     boolean estado; //false = apagado ; true = encendido
+    String tipo;
 
 
     public Computadora(String marca, boolean estado) {
         this.marca = marca;
         this.estado = estado;
+        this.tipo = "Computadora";
+    }
+
+    public String getTipo() {
+        return tipo;
     }
 
     public String getMarca() {
@@ -31,5 +37,10 @@ public class Computadora implements DispositivoElectronico {
             return estado;
         }
     }
+
+    public String toString() {
+        return "Marca: " + marca;
+    }
+
     
 }

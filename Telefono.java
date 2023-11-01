@@ -2,11 +2,17 @@ public class Telefono implements DispositivoElectronico {
     
     String modelo;
     boolean estado; //false = apagado ; true = encendido
+    String tipo;
 
 
-    public Telefono(String modelo) {
+    public Telefono(String modelo,boolean estado) {
         this.modelo = modelo;
-        this.estado = false;
+        this.estado = estado;
+        this.tipo = "Telefono";
+    }
+
+    public String getTipo() {
+        return tipo;
     }
 
     public String getModelo() {
@@ -30,6 +36,11 @@ public class Telefono implements DispositivoElectronico {
         }else{
             return estado;
         }
+    }   
+    
+    public String toString() {
+        return "Modelo: " + modelo;
     }
+
     
 }

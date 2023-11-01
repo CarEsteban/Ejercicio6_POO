@@ -2,6 +2,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 public class Tienda{
     public static void main(String[] args) throws IOException {
         int menu, opc;
@@ -9,7 +11,7 @@ public class Tienda{
         Scanner scanner = new Scanner(System.in);
         File archivo = new File("dispositivos.csv");
         ArrayList<DispositivoElectronico> dispositivos = new ArrayList<DispositivoElectronico>();
-        cargarArchivos(archivo);  
+        cargarArchivos(archivo,dispositivos);  
 
 
 
@@ -22,21 +24,8 @@ public class Tienda{
             switch(opc){
                 case 1:
 
-                    try (BufferedReader br = new BufferedReader(new FileReader(archivo)) ) {
-                        String line;
-                        
-                        while ((line = br.readLine()) != null) {
-                            
-                            String[] campos = line.split(",");
-
-                            for (String campo : campos) {
-                                System.out.print(campo + "\t|\t");
-                            }
-                            System.out.println(); 
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    imprimirDispositivos(dispositivos, "Telefono",null);
+                    imprimirDispositivos(dispositivos, "Computadora",null);
 
 
                     break;
@@ -94,22 +83,76 @@ private static void guardarDatos(ArrayList<DispositivoElectronico> dispositivos,
                 
     }
 
-    private static void cargarArchivos(File archivo) throws IOException{
-        try {
-            Scanner escritor = new Scanner(archivo);
-            if(archivo.exists()){
-                System.out.println("Archivo " + archivo + " cargado correctamente!!");
-            }else{        
-                System.out.println( archivo + " no se cargó correctamente");
+    private static void cargarArchivos(File archivo, ArrayList<DispositivoElectronico> dispositivos) throws IOException{
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String line;
+
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] campos = line.split(",");
+                if (campos[0].equals("Telefono")) {
+
+                    String modelo = campos[1].trim();
+                    boolean estado = Boolean.parseBoolean(campos[2]);
+
+                    dispositivos.add(new Telefono(modelo, estado));
+
+                }else if(campos[0].equals("Computadora")){
+                    String marca = campos[2].trim();
+                    boolean estado = Boolean.parseBoolean(campos[2]);
+                    dispositivos.add(new Computadora(marca, estado));
+                }
             }
-            escritor.close();
-            
-        } catch (FileNotFoundException e) {
-            System.out.println("Upsi");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private static void imprimirDispositivos(ArrayList<DispositivoElectronico> dispositivos, String tipo, String estadoS) {
+        if(estadoS.equals("true")){
+            boolean estado = Boolean.parseBoolean(estadoS);
+            System.out.println(estado + ":");
+            for (DispositivoElectronico dispositivo : dispositivos) {
+                if (dispositivo.getTipo().equals(tipo)) {
+                    System.out.println("\t"+dispositivo);
+                }
+            }
+        }else if(estadoS.equals("false")){
+            boolean estado = Boolean.parseBoolean(estadoS);
+
+            System.out.println(estado + ":");
+            for (DispositivoElectronico dispositivo : dispositivos) {
+                if (dispositivo.getTipo().equals(tipo)) {
+                    System.out.println("\t"+dispositivo);
+                }
+            }
+        }else{
+            System.out.println(tipo + ":");
+            for (DispositivoElectronico dispositivo : dispositivos) {
+                if (dispositivo.getTipo().equals(tipo)) {
+                    System.out.println("\t"+dispositivo);
+                }
+            }
+        }
+        
+        System.out.println(tipo + ":");
+        for (DispositivoElectronico dispositivo : dispositivos) {
+            if (dispositivo.getTipo().equals(tipo)) {
+                System.out.println("\t"+dispositivo);
+            }
+        }
+    }
+
+    
+    private static void validacionDispositivos(ArrayList<DispositivoElectronico> dispositivos, String tipo) {
+        System.out.println(tipo + ":");
+        for (DispositivoElectronico dispositivo : dispositivos) {
+            if (dispositivo.getTipo().equals(tipo)) {
+                System.out.println("\t"+dispositivo);
+            }
+        }
+    }
 
 
     private static boolean volverAlMenu(Scanner scanner, String eleccion) {
