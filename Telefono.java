@@ -19,6 +19,10 @@ public class Telefono implements DispositivoElectronico {
         return modelo;
     }
 
+    public boolean getEstado(){
+        return estado;
+    }
+
     @Override
     public void apagar() {
         estado = false;

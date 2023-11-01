@@ -19,6 +19,10 @@ public class Computadora implements DispositivoElectronico {
         return marca;
     }
 
+    public boolean getEstado(){
+        return estado;
+    }
+
     @Override
     public void apagar() {
         estado = false;
