@@ -2,9 +2,20 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
-public class Tienda{
+/**
+ * La clase Tienda representa una aplicación de gestión de dispositivos electrónicos.
+ * Permite al usuario realizar diversas operaciones relacionadas con dispositivos, como mostrar información,
+ * validar su estado, cambiar el estado y agregar nuevos dispositivos.
+ */
+public class Tienda {
+    /**
+     * Método principal de la aplicación.
+     *
+     * @param args Argumentos de línea de comandos (no se utilizan en este caso).
+     * @throws IOException Si ocurre un error de entrada/salida al trabajar con archivos.
+     */
     public static void main(String[] args) throws IOException {
+        // Declaración de variables y objetos utilizados en la aplicación.
         int menu, opc;
         boolean continuar=true,continuarSubMenu=true;
         Scanner scanner = new Scanner(System.in);
