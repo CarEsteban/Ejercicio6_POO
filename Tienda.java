@@ -42,63 +42,71 @@ public class Tienda{
 
                         switch (menu) {
                             case 1:
-                                String cambiar;
-                                boolean estadoActual=false;
+                                String cambiar;                                
+                                boolean estadoActual = false;
                                 System.out.println("Ingrese el modelo o marca exacto para cambiar el estado");
                                 imprimirDispositivos(dispositivos, "Telefono");
                                 imprimirDispositivos(dispositivos, "Computadora");
                                 cambiar = scanner.nextLine();
+                                boolean cambioRealizado = false;
+
                                 for (DispositivoElectronico dispositivo : dispositivos) {
-                                    if(dispositivo instanceof Telefono && cambiar.equals(((Telefono)dispositivo).getModelo())){
-                                        System.out.println("Estado actual: " + dispositivo.getEstado());
-                                        if(dispositivo.getEstado()){
+                                    if (dispositivo instanceof Telefono && cambiar.equals(((Telefono) dispositivo).getModelo())) {
+                                        estadoActual = dispositivo.getEstado();
+                                        System.out.println("Estado actual: " + estadoActual);
+
+                                        if (estadoActual) {
                                             dispositivo.apagar();
-                                        }else{
+                                        } else {
                                             dispositivo.encender();
                                         }
+
                                         System.out.println("Estado cambiado: " + dispositivo.getEstado());
+                                        cambioRealizado = true;
+                                    } else if (dispositivo instanceof Computadora && cambiar.equals(((Computadora) dispositivo).getMarca())) {
+                                        estadoActual = dispositivo.getEstado();
+                                        System.out.println("Estado actual: " + estadoActual);
 
-                                    }else if(dispositivo instanceof Computadora && cambiar.equals(((Computadora)dispositivo).getMarca())){    
-                                        System.out.println("Estado actual: " + dispositivo.getEstado());
-                                        if(dispositivo.getEstado()){
+                                        if (estadoActual) {
                                             dispositivo.apagar();
-                                            
-                                            try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-                                                String line;
-                                                br.readLine();
-
-                                                while ((line = br.readLine()) != null) {
-                                                    String[] campos = line.split(",");
-                                                    if (campos[1].equals(cambiar)) {
-                                                        String estadoString = estadoActual ? "Encendido" : "Apagado";
-
-                                                        campos[3] = estadoString;
-                                                    }
-
-
-                                                }
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-
-
-                                        }else{
+                                        } else {
                                             dispositivo.encender();
                                         }
-                                        System.out.println("Estado cambiado: " + dispositivo.getEstado());
 
+                                        System.out.println("Estado cambiado: " + dispositivo.getEstado());
+                                        cambioRealizado = true;
                                     }
                                 }
 
+                                if (cambioRealizado) {
+                                    guardarDatos(dispositivos, archivo); // Actualiza el archivo CSV después del cambio
+                                }
 
-                                continuarSubMenu = volverAlMenu(scanner, " a cambiar algo? ");
+                                continuarSubMenu = volverAlMenu(scanner, " a cambiar algo? ",archivo,dispositivos);
                                 break;
                         
                             case 2:
                                 
+                            System.out.print("Por favor, introduce el tipo: ");
+                            String tipo = scanner.nextLine();
+
+                            if(tipo.equals("Telefono")){
+
+                                System.out.print("Por favor, introduce el modelo: ");
+                                String modelo = scanner.nextLine();
+
+                                dispositivos.add(new Telefono(modelo, false));
+                        
+                            }else if(tipo.equals("Computadora")){
+                                    
+                                System.out.print("Por favor, introduce la marca: ");
+                                String marca = scanner.nextLine();
+                                dispositivos.add(new Telefono(marca, false));
+                        
+                            }
 
 
-                                continuarSubMenu = volverAlMenu(scanner, " a cambiar algo? ");
+                                continuarSubMenu = volverAlMenu(scanner, " a cambiar algo? ", archivo, dispositivos);
                                 break;
                         
                             default:
@@ -112,13 +120,14 @@ public class Tienda{
                 case 4:
                     System.out.println("Saliendo del programa...");
                     continuar=false;
+                    guardarDatos(dispositivos, archivo);
                     break;
                 default:
                     break;
 
             }
 
-            continuar = volverAlMenu(scanner, " al menú? ");
+            continuar = volverAlMenu(scanner, " al menú? ", archivo, dispositivos);
         }
     }
 
@@ -133,6 +142,30 @@ public class Tienda{
 
     }
 
+    private static void guardarDatos(ArrayList<DispositivoElectronico> dispositivos, File archivo) {
+        StringBuilder contenidoExistente = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                contenidoExistente.append(linea).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (DispositivoElectronico dispositivo : dispositivos) {
+            if (!contenidoExistente.toString().contains(dispositivo.toString())) {
+                contenidoExistente.append(dispositivo).append("\n");
+            }
+        }
+
+        try (PrintWriter writer = new PrintWriter(new FileWriter(archivo))) {
+            writer.print(contenidoExistente.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void cargarArchivos(File archivo, ArrayList<DispositivoElectronico> dispositivos) throws IOException{
         
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
@@ -144,22 +177,17 @@ public class Tienda{
                 if (campos[0].equals("Telefono")) {
 
                     String modelo = campos[1].trim();
-                    if(campos[3].equals("Encendido")){
-                        estado = true;
-                    }else if (campos[3].equals("Apagado")) {
-                        estado = false;
-                    }
+                    
+                    estado = Boolean.parseBoolean(campos[2]);
                     
                     dispositivos.add(new Telefono(modelo, estado));
 
                 }else if(campos[0].equals("Computadora")){
                     
-                    String marca = campos[2].trim();
-                    if(campos[3].equals("Encendido")){
-                        estado = true;
-                    }else if (campos[3].equals("Apagado")) {
-                        estado = false;
-                    }
+                    String marca = campos[1].trim();
+
+                    estado = Boolean.parseBoolean(campos[2]);
+
                     dispositivos.add(new Computadora(marca, estado));
                 }
             }
@@ -197,13 +225,15 @@ public class Tienda{
     }
     
 
-    private static boolean volverAlMenu(Scanner scanner, String eleccion) {
+    private static boolean volverAlMenu(Scanner scanner, String eleccion, File archivo, ArrayList<DispositivoElectronico> dispositivos) {
         System.out.println("¿Desea volver" + eleccion + " (1: Sí, 0: No): ");
         int opcion = scanner.nextInt();
         scanner.nextLine();
         if (opcion == 0) {
             if (eleccion.equals(" al menú? ")) {
                 System.out.println("Saliendo del programa.");
+                guardarDatos(dispositivos, archivo);
+
                 return false;
             } else {
                 System.out.println("Saliendo de la opción.");

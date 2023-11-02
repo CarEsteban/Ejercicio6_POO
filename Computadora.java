@@ -43,7 +43,7 @@ public class Computadora implements DispositivoElectronico {
     }
 
     public String toString() {
-        return "Marca: " + marca;
+        return tipo+","+marca+","+estado;
     }
 
     

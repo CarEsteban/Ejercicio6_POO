@@ -43,7 +43,7 @@ public class Telefono implements DispositivoElectronico {
     }   
     
     public String toString() {
-        return "Modelo: " + modelo;
+        return tipo+","+modelo+","+estado;
     }
 
     
